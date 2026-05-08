@@ -22,6 +22,10 @@ jobs:
             cd khuthon_rSemo_backend
             git pull origin main
             
+            # Create .env file for docker-compose
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+            
             docker compose down
             
             docker compose up -d --build
