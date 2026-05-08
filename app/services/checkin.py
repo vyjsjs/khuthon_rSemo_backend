@@ -33,8 +33,11 @@ def _try_create_match(station_id: int, genre: str) -> None:
     if existing.data:
         return
 
-    station = supabase.table("stations").select("latitude,longitude").eq("id", station_id).single().execute()
-    s_lat, s_lon = station.data["latitude"], station.data["longitude"]
+    try:
+        station = supabase.table("stations").select("latitude,longitude").eq("id", station_id).single().execute()
+        s_lat, s_lon = station.data["latitude"], station.data["longitude"]
+    except Exception:
+        return
 
     artists = supabase.table("artists").select("*").eq("is_available", True).execute().data
 
