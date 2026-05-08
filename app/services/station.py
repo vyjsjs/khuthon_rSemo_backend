@@ -19,6 +19,14 @@ def get_station(station_id: int) -> dict | None:
         return None
 
 
+def get_checkin_count(station_id: int, genre: str | None = None) -> dict:
+    query = supabase.table("checkins").select("id").eq("station_id", station_id)
+    if genre:
+        query = query.eq("genre", genre)
+    count = len(query.execute().data)
+    return {"station_id": station_id, "genre": genre, "count": count}
+
+
 def get_demand_summary(station_id: int) -> list:
     rows = supabase.table("checkins").select("genre").eq("station_id", station_id).execute().data
     counts = Counter(r["genre"] for r in rows)

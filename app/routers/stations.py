@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException
 from app.schemas.station import StationCreate, StationResponse
 import app.services.station as svc
@@ -21,6 +22,11 @@ def get_station(station_id: int):
     if not data:
         raise HTTPException(status_code=404, detail="Station not found")
     return data
+
+
+@router.get("/{station_id}/checkin-count")
+def get_checkin_count(station_id: int, genre: Optional[str] = None):
+    return svc.get_checkin_count(station_id, genre)
 
 
 @router.get("/{station_id}/demand")
