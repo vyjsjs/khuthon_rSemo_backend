@@ -1,0 +1,35 @@
+name: Deploy to EC2 with Docker
+
+on:
+  push:
+    branches: [ main ] # main 브랜치에 푸시될 때 작동합니다.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            if [ ! -d "khuthon_rSemo_backend/.git" ]; then
+              rm -rf khuthon_rSemo_backend
+              git clone https://github.com/vyjsjs/khuthon_rSemo_backend
+            fi
+            
+            cd khuthon_rSemo_backend
+            git pull origin main
+            
+            # Create .env file for docker-compose
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+            
+            sudo docker compose down
+            
+            sudo docker compose up -d --build
+            
+            sudo docker image prune -f
