@@ -3,6 +3,13 @@ from app.config import MATCH_THRESHOLD
 from app.utils.distance import haversine_km
 
 
+def get_user_checkins(user_id: int, station_id: int | None = None) -> list:
+    query = supabase.table("checkins").select("*").eq("user_id", user_id)
+    if station_id:
+        query = query.eq("station_id", station_id)
+    return query.execute().data
+
+
 def create_checkin(data: dict) -> dict:
     res = supabase.table("checkins").insert(data).execute()
     checkin = res.data[0]
