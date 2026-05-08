@@ -20,3 +20,4 @@ class StationResponse(BaseModel):
     supported_genres: Optional[str] = None
     hourly_cost: Optional[float] = None
     is_active: bool
+    current_count: Optional[int] = None

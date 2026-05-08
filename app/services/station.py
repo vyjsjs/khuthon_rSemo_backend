@@ -7,8 +7,16 @@ def create_station(data: dict) -> dict:
     return res.data[0]
 
 
-def list_stations() -> list:
-    return supabase.table("stations").select("*").eq("is_active", True).execute().data
+def list_stations(genre: str | None = None) -> list:
+    stations = supabase.table("stations").select("*").eq("is_active", True).execute().data
+    if genre:
+        stations = [s for s in stations if genre in (s.get("supported_genres") or "")]
+    for s in stations:
+        query = supabase.table("checkins").select("id").eq("station_id", s["id"])
+        if genre:
+            query = query.eq("genre", genre)
+        s["current_count"] = len(query.execute().data)
+    return stations
 
 
 def get_station(station_id: int) -> dict | None:
@@ -17,6 +25,14 @@ def get_station(station_id: int) -> dict | None:
         return res.data
     except Exception:
         return None
+
+
+def get_checkin_count(station_id: int, genre: str | None = None) -> dict:
+    query = supabase.table("checkins").select("id").eq("station_id", station_id)
+    if genre:
+        query = query.eq("genre", genre)
+    count = len(query.execute().data)
+    return {"station_id": station_id, "genre": genre, "count": count}
 
 
 def get_demand_summary(station_id: int) -> list:
