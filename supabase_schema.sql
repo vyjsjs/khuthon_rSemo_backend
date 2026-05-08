@@ -142,3 +142,39 @@ CREATE TABLE event_attendances (
     UNIQUE (event_id, user_id)
 
 );
+
+
+
+-- 8. 공연 예매 테이블
+
+CREATE TABLE reservations (
+
+    id         BIGSERIAL PRIMARY KEY,
+
+    user_id    BIGINT REFERENCES users(id) ON DELETE CASCADE,
+
+    event_id   BIGINT REFERENCES events(id) ON DELETE CASCADE,
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+
+    UNIQUE (user_id, event_id)
+
+);
+
+
+
+-- 9. 알림 테이블
+
+CREATE TABLE notifications (
+
+    id         BIGSERIAL PRIMARY KEY,
+
+    user_id    BIGINT REFERENCES users(id) ON DELETE CASCADE,
+
+    message    TEXT NOT NULL,
+
+    is_read    BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMPTZ DEFAULT NOW()
+
+);

@@ -26,3 +26,12 @@ def get_event(event_id: int):
     if not data:
         raise HTTPException(status_code=404, detail="Event not found")
     return data
+
+
+from app.schemas.reservation import ReservationCreate, ReservationResponse
+import app.services.reservation as res_svc
+
+@router.post("/{event_id}/reservations", response_model=ReservationResponse, status_code=201)
+def create_reservation(event_id: int, body: ReservationCreate):
+    return res_svc.create_reservation(event_id, body.user_id)
+

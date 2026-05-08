@@ -41,4 +41,9 @@ def respond_to_match(match_id: int, status: str, scheduled_at: Optional[datetime
                 for uid in unique_user_ids
             ]).execute()
 
+            supabase.table("notifications").insert([
+                {"user_id": uid, "message": f"공연이 확정되었어요! '{match['genre']}' 공연 일정을 확인해보세요."}
+                for uid in unique_user_ids
+            ]).execute()
+
     return match

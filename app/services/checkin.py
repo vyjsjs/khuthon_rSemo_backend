@@ -55,3 +55,9 @@ def _try_create_match(station_id: int, genre: str) -> None:
         "demand_count": len(checkins.data),
         "status": "pending",
     }).execute()
+
+    supabase.table("notifications").insert({
+        "user_id": best_artist["user_id"],
+        "message": f"새로운 수요가 생겼어요! '{genre}' 장르 매칭 제안이 도착했습니다."
+    }).execute()
+
