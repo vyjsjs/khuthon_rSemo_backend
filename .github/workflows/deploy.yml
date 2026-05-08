@@ -16,7 +16,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            if [ ! -d "khuthon_rSemo_backend" ]; then
+            if [ ! -d "khuthon_rSemo_backend/.git" ]; then
+              rm -rf khuthon_rSemo_backend
               git clone https://github.com/vyjsjs/khuthon_rSemo_backend
             fi
             
