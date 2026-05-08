@@ -7,8 +7,8 @@ router = APIRouter(prefix="/stations", tags=["stations"])
 
 
 @router.get("", response_model=list[StationResponse])
-def list_stations():
-    return svc.list_stations()
+def list_stations(genre: Optional[str] = None):
+    return svc.list_stations(genre)
 
 
 @router.post("", response_model=StationResponse, status_code=201)
