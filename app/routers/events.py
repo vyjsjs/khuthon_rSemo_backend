@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from app.schemas.event import EventCreate, EventResponse
 import app.services.event as svc
 
@@ -15,6 +15,14 @@ def create_event(body: EventCreate):
     return svc.create_event(body.model_dump())
 
 
-@router.get("/station/{station_id}", response_model=list[EventResponse])
+@router.get("/by-station/{station_id}", response_model=list[EventResponse])
 def events_by_station(station_id: int):
     return svc.list_events_by_station(station_id)
+
+
+@router.get("/{event_id}", response_model=EventResponse)
+def get_event(event_id: int):
+    data = svc.get_event(event_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return data

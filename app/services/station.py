@@ -8,7 +8,11 @@ def create_station(data: dict) -> dict:
 
 
 def list_stations() -> list:
-    return supabase.table("stations").select("*").eq("is_active", True).execute().data
+    stations = supabase.table("stations").select("*").eq("is_active", True).execute().data
+    for s in stations:
+        count = len(supabase.table("checkins").select("id").eq("station_id", s["id"]).execute().data)
+        s["current_count"] = count
+    return stations
 
 
 def get_station(station_id: int) -> dict | None:

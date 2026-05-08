@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class EventCreate(BaseModel):
@@ -13,3 +14,4 @@ class EventResponse(BaseModel):
     scheduled_at: datetime
     status: str
     created_at: datetime
+    confirmed_count: Optional[int] = None
