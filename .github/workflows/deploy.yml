@@ -15,13 +15,12 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ~/khuthon_rSemo_backend
-            
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/vyjsjs/khuthon_rSemo_backend .
-            else
-              git pull origin main
+            if [ ! -d "khuthon_rSemo_backend" ]; then
+              git clone https://github.com/vyjsjs/khuthon_rSemo_backend
             fi
+            
+            cd khuthon_rSemo_backend
+            git pull origin main
             
             docker compose down
             
