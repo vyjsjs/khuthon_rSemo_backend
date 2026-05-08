@@ -4,7 +4,7 @@ from typing import Literal
 
 
 class UserCreate(BaseModel):
-    role: Literal["resident", "artist"]
+    role: Literal["resident", "artist"] = "resident"
 
 
 class UserResponse(BaseModel):
