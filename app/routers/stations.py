@@ -16,6 +16,11 @@ def create_station(body: StationCreate):
     return svc.create_station(body.model_dump())
 
 
+@router.get("/recommended", response_model=list[StationResponse])
+def get_recommended_stations(artist_id: int):
+    return svc.get_recommended_stations(artist_id)
+
+
 @router.get("/{station_id}", response_model=StationResponse)
 def get_station(station_id: int):
     data = svc.get_station(station_id)

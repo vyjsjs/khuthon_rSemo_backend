@@ -39,3 +39,28 @@ def get_demand_summary(station_id: int) -> list:
     rows = supabase.table("checkins").select("genre").eq("station_id", station_id).execute().data
     counts = Counter(r["genre"] for r in rows)
     return [{"genre": g, "count": c} for g, c in counts.most_common()]
+
+
+def get_recommended_stations(artist_id: int) -> list:
+    from app.services.artist import get_artist
+    artist = get_artist(artist_id)
+    if not artist:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Artist not found")
+
+    main_genre = artist.get("genres", "").split(",")[0].strip()
+    if not main_genre:
+        return []
+
+    stations = supabase.table("stations").select("*").eq("is_active", True).execute().data
+    checkins_res = supabase.table("checkins").select("station_id").eq("genre", main_genre).execute().data
+    
+    counts = Counter(c["station_id"] for c in checkins_res)
+    
+    recommended = []
+    for s in stations:
+        s["current_count"] = counts.get(s["id"], 0)
+        recommended.append(s)
+        
+    recommended.sort(key=lambda x: x["current_count"], reverse=True)
+    return recommended
